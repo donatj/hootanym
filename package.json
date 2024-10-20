@@ -1,0 +1,22 @@
+{
+  "name": "hootanym",
+  "version": "0.0.1",
+  "description": "Take notes on HN users, see their Keybase.io profiles and more!",
+  "main": "content.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesse G Donat <donatj@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/chrome": "^0.0.268"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.1.1",
+    "rollup": "^4.24.0",
+    "sass": "^1.77.4",
+    "tslib": "^2.8.0",
+    "typescript": "^5.5.4"
+  }
+}
