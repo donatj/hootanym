@@ -8,11 +8,11 @@ This privacy policy applies to the Chrome extension HootaNym. We respect your pr
 
 ## 2. Data Collection and Use
 
-HootaNym reads usernames from pages it runs on and uses Keybase's identity API to provide additional context about user identities. However, this information is not stored, tracked, or shared by HootaNym. The data is used only for the duration of your session to enhance user experience and is not retained.
+HootaNym reads usernames from pages it runs on and uses Keybase's identity API to provide additional context about user identities. Keybase API responses are cached locally in your browser to improve performance. However, this data is not tracked, shared, or stored outside your local browser environment. The cache is used only to enhance your session experience.
 
 ## 3. Data Security
 
-HootaNym processes usernames locally in your browser and uses a secure connection to interact with Keybase's identity API. Since HootaNym does not store data, the risk of exposure or misuse is minimized.
+HootaNym processes usernames locally in your browser and interacts securely with Keybase's identity API. Cached data remains on your device and is not transmitted to any external server by HootaNym, minimizing the risk of data exposure or misuse.
 
 ## 4. Changes to Our Privacy Policy
 
