@@ -69,8 +69,6 @@ function serviceIcon(url: string, service: string): HTMLAnchorElement {
 	return link;
 }
 
-hnusers.forEach(render);
-
 function getHNUser(elm: Element): HNUser {
 	const link = elm.getAttribute('href') || '';
 	if (link != '') {
@@ -83,3 +81,5 @@ function getHNUser(elm: Element): HNUser {
 
 	throw new Error('Could not parse HN user');
 }
+
+hnusers.forEach(render);
