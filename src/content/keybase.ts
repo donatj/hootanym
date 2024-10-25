@@ -140,7 +140,7 @@ export interface StellarPrimary {
 	readonly account_id: string;
 }
 
-export type KeybaseFrom = 'username' | 'hackernews'
+export type KeybaseFrom = ProofTypes;
 
 export function lookupKeybase(username: string, from: KeybaseFrom): Promise<KeybaseAPI> {
 	return fetch(`https://keybase.io/_/api/1.0/user/lookup.json?${from}=${username}`)
@@ -192,3 +192,19 @@ export function lookupKeybaseCached(username: string, from: KeybaseFrom): Promis
 		});
 }
 
+export const proof_types = [
+	'keybase',
+	'hackernews',
+	'reddit',
+	'github',
+	'generic_web_site',
+	'dns',
+	'facebook',
+	'twitter',
+] as const;
+
+export type ProofTypes = typeof proof_types[number];
+
+export function isKnownProofType(type: string): type is ProofTypes {
+	return proof_types.includes(type as ProofTypes);
+}

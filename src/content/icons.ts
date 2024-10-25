@@ -1,15 +1,4 @@
-export const proof_types = [
-	'keybase',
-	'hackernews',
-	'reddit',
-	'github',
-	'generic_web_site',
-	'dns',
-	'facebook',
-	'twitter',
-] as const;
-
-type ProofTypes = typeof proof_types[number];
+import { ProofTypes } from "./keybase";
 
 export type Icons = Record<ProofTypes | 'unknown', string>;
 
@@ -33,10 +22,6 @@ export const icons: Icons = {
 	unknown:
 		'<svg height="12" width="12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7344 7344"><text style="line-height:1.25" x="1400.34" y="6628.27" font-weight="400" font-size="24480" font-family="sans-serif" letter-spacing="0" word-spacing="0" stroke-width="612"><tspan x="1400.34" y="6628.27" style="-inkscape-font-specification:\'sans-serif Bold\'" font-size="8160" font-weight="700">?</tspan></text></svg>',
 };
-
-export function isKnownProofType(type: string): type is ProofTypes {
-	return type in icons;
-}
 
 export function iconDataStream(key: keyof Icons): string {
 	const svg = icons[key];

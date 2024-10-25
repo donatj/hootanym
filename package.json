@@ -1,6 +1,6 @@
 {
   "name": "hootanym",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Take notes on HN users, see their Keybase.io profiles and more!",
   "main": "content.js",
   "type": "module",

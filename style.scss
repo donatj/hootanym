@@ -1,3 +1,59 @@
+body.hnwhois-options {
+	background : #bbb;
+	color: #333;
+
+	h1 {
+		text-align: center;
+		margin: 0;
+	}
+
+	main {
+		background: white;
+		width: 600px;
+		margin: 0 auto;
+		margin-top: 11vh;
+		padding: 22px;
+
+		outline: 3px double #0000002b;
+		box-shadow: 0 0 20px 0 #00000042;
+		border-radius: 11px;
+	}
+
+	fieldset {
+		border: 1px solid #ccc;
+		border-radius: 7px;
+		padding: 11px;
+		margin-top: 11px;
+
+		legend {
+			font-weight: bold;
+			font-size: 1.2em;
+		}
+	}
+
+	output {
+		display: block;
+		font-family: Consolas, monospace;
+		color: white;
+		background: black;
+		padding: 11px;
+		white-space: pre;
+		margin-top: 11px;
+		border-radius: 7px;
+		border: 3px solid #999;
+	}
+
+	footer {
+		text-align: center;
+		margin-top: 22px;
+
+		> * {
+			display: inline-block;
+			margin: 0 0.2em;
+		}
+	}
+}
+
 .hnwhois-user {
 	display: inline-block;
 	margin-left: 0.4em;

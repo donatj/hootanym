@@ -3,7 +3,8 @@ DESCR = $(shell jq .description -r manifest.json)
 
 .PHONY: build
 build: style.css
-	npx rollup -c
+	npx rollup --config rollup.content.config.js
+	npx rollup --config rollup.options.config.js
 
 .PHONY: sync
 sync:
@@ -23,4 +24,4 @@ style.css: style.scss
 release: sync release-${VERSION}.zip
 
 release-${VERSION}.zip: clean build
-	zip -r release-${VERSION}.zip manifest.json *.css *.png *.md dist
+	zip -r release-${VERSION}.zip manifest.json *.html *.css *.png *.md dist

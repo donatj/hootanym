@@ -1,10 +1,14 @@
-import { KeybaseAPI, lookupKeybaseWithRetry } from "./keybase";
+import { KeybaseAPI, lookupKeybaseWithRetry, ProofTypes } from "./keybase";
 
 export class HNUser {
-	constructor(public readonly user: string) { }
+
+	constructor(
+		public readonly user: string,
+		public readonly type : ProofTypes = 'hackernews'
+	) { }
 
 	public key(): string {
-		return `hnuser:${this.user}`;
+		return `identity:${this.type}:${this.user}`;
 	}
 
 	public storeDescr(descr: string) {
@@ -23,6 +27,6 @@ export class HNUser {
 	}
 
 	public KeybaseLookup(): Promise<KeybaseAPI> {
-		return lookupKeybaseWithRetry(this.user, 'hackernews');
+		return lookupKeybaseWithRetry(this.user, this.type);
 	}
 }

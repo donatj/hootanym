@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Options</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="dist/options.js"></script>
+</head>
+
+<body class="hnwhois-options">
+	<main>
+		<h1>HootAnym Options</h1>
+		<fieldset>
+			<legend>Export User Data</legend>
+			<p style="text-align: center;">
+				<input type="button" value="Export User Data" id="exportUserData">
+			</p>
+		</fieldset>
+
+		<fieldset>
+			<legend>Import User Data</legend>
+			<p>
+				<input type="file" value="Import User Data" id="importUserData" accept=".json">
+				<input type="button" value="Import User Data" id="importUserDataButton">
+				<output id="importUserDataOutput"></output>
+			</p>
+		</fieldset>
+		<footer></footer>
+	</main>
+
+</html>

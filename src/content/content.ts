@@ -1,5 +1,6 @@
 import { Dialog } from "./dialog";
-import { iconDataStream, isKnownProofType } from "./icons";
+import { iconDataStream } from "./icons";
+import { isKnownProofType } from "./keybase";
 import { HNUser } from "./users";
 
 const dialog = new Dialog(document.body);

@@ -7,7 +7,7 @@
 		"48": "icon48.png",
 		"128": "icon128.png"
 	},
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"offline_enabled": false,
 	"homepage_url": "https://github.com/donatj/hootanym",
 	"permissions": [
@@ -22,5 +22,6 @@
 	],
 	"host_permissions": [
 		"https://keybase.io/_/api/*"
-	]
+	],
+	"options_page": "options.html"
 }
