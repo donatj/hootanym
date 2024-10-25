@@ -1,4 +1,4 @@
-# HootaNym <img align=top src="icon48.png" width="32">
+# HootaNym <img align=top src="icon48.png" width="40">
 
 [![Node.js CI](https://github.com/donatj/hootanym/actions/workflows/ci.yml/badge.svg)](https://github.com/donatj/hootanym/actions/workflows/ci.yml)
 
