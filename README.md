@@ -1,5 +1,7 @@
 # HootaNym
 
+[![Node.js CI](https://github.com/donatj/hootanym/actions/workflows/ci.yml/badge.svg)](https://github.com/donatj/hootanym/actions/workflows/ci.yml)
+
 This is intended as a spiritual successor to the [Proven](https://github.com/dschep/proven) Chrome extension.
 
 It is a Chrome extension that reads usernames from pages it runs on and uses Keybase's identity API to provide additional context about user identities.
