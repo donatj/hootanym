@@ -1,6 +1,12 @@
 import { iconDataStream, icons } from "../content/icons";
 import { isKnownProofType } from "../content/keybase";
-import { HNUser } from "../content/users";
+import { descrPrefix, emojiPrefix, HNUser, isAValidPrefix } from "../content/users";
+
+class NeverError extends Error {
+	constructor(public readonly value: never, comment: string = "") {
+		super(comment);
+	}
+}
 
 document.addEventListener('DOMContentLoaded', () => {
 	const exportUserButton = document.getElementById('exportUserData') as HTMLButtonElement;
@@ -74,20 +80,31 @@ document.addEventListener('DOMContentLoaded', () => {
 					return;
 				}
 
-				if(parts[0] !== 'identity') {
-					importUserDataOutput.textContent += `Key ${key} is not an identity\n`;
+				const part = parts[0] ?? '';
+				if (!isAValidPrefix(part)) {
+					importUserDataOutput.textContent += `Prefix ${part} is unhandled\n`;
 					return;
 				}
 
 				const service = parts[1] ?? '';
-				if( !isKnownProofType(service) ) {
+				if (!isKnownProofType(service)) {
 					importUserDataOutput.textContent += `Service ${service} is unknown\n`;
 					return;
 				}
 
 				const user = parts[2] ?? '';
+				const hnuser = new HNUser(user, service);
 
-				new HNUser(user, service).storeDescr(value);
+				switch (part) {
+					case descrPrefix:
+						hnuser.storeDescr(value);
+						break;
+					case emojiPrefix:
+						hnuser.storeEmoji(value);
+						break;
+					default:
+						throw new NeverError(part);
+				}
 			});
 		};
 

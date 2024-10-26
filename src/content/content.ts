@@ -17,17 +17,17 @@ async function render(elm: HTMLElement) {
 	notes.classList.add('hnwhois-user-link');
 	notes.textContent = '⋯';
 
-	const descr = await user.getDescr();
-	if (descr.trim() != '') {
+	const info = await user.getInfo();
+	if (info.descr != '') {
 		notes.classList.add('hnwhois-user-link-seen');
-		notes.textContent = '👁️';
-		notes.title = descr;
-		elm.title = descr;
+		notes.textContent = info.emoji;
+		notes.title = info.descr;
+		elm.title = 'descr: ' + info.descr;
 	}
 
 	notes.addEventListener('click', async () => {
-		dialog.show(await user.getDescr(), (str) => {
-			user.storeDescr(str);
+		dialog.show(await user.getInfo(), (value) => {
+			user.store(value);
 			div.parentElement?.removeChild(div);
 			render(elm);
 		});

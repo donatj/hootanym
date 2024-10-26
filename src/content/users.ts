@@ -1,4 +1,19 @@
-import { KeybaseAPI, lookupKeybaseWithRetry, ProofTypes } from "./keybase";
+import { defaultEmoji } from "./dialog";
+import { KeybaseAPI, lookupKeybaseCached, ProofTypes } from "./keybase";
+
+export interface UserInfo {
+	descr: string;
+	emoji: string;
+}
+
+export const descrPrefix = 'identity' as const;
+export const emojiPrefix = 'emoji' as const;
+export type prefixes = typeof emojiPrefix | typeof descrPrefix;
+
+export function isAValidPrefix(prefix: string): prefix is prefixes {
+	return prefix === descrPrefix || prefix === emojiPrefix;
+}
+
 
 export class HNUser {
 
@@ -7,26 +22,48 @@ export class HNUser {
 		public readonly type : ProofTypes = 'hackernews'
 	) { }
 
-	public key(): string {
-		return `identity:${this.type}:${this.user}`;
+	private descrKey(): string {
+		return `${descrPrefix}:${this.type}:${this.user}`;
 	}
 
-	public storeDescr(descr: string) {
+	private emojiKey(): string {
+		return `${emojiPrefix}:${this.type}:${this.user}`;
+	}
+
+	public async store(info: UserInfo) {
+		// store emoji first because storeDescr will remove it if descr is empty
+		await this.storeEmoji(info.emoji);
+		await this.storeDescr(info.descr);
+	}
+
+	public async storeDescr(descr: string) {
 		descr = descr.trim();
 
-		if (descr == '') {
-			return chrome.storage.sync.remove(this.key());
+		if(descr == '') {
+			await chrome.storage.sync.remove(this.descrKey());
+			await chrome.storage.sync.remove(this.emojiKey());
+
+			return;
 		}
 
-		return chrome.storage.sync.set({ [this.key()]: descr.trim() });
+		await chrome.storage.sync.set({ [this.descrKey()]: descr.trim() });
 	}
 
-	public async getDescr(): Promise<string> {
-		const value = await chrome.storage.sync.get(this.key());
-		return value[this.key()] || '';
+	public async storeEmoji(emoji: string) {
+		await chrome.storage.sync.set({ [this.emojiKey()]: emoji });
+	}
+
+	public async getInfo(): Promise<UserInfo> {
+		const descr = await chrome.storage.sync.get(this.descrKey());
+		const emoji = await chrome.storage.sync.get(this.emojiKey());
+
+		return {
+			descr: (descr[this.descrKey()] || '').trim(),
+			emoji: emoji[this.emojiKey()] || defaultEmoji,
+		};
 	}
 
 	public KeybaseLookup(): Promise<KeybaseAPI> {
-		return lookupKeybaseWithRetry(this.user, this.type);
+		return lookupKeybaseCached(this.user, this.type);
 	}
 }

@@ -146,8 +146,6 @@ export function lookupKeybase(username: string, from: KeybaseFrom): Promise<Keyb
 	return fetch(`https://keybase.io/_/api/1.0/user/lookup.json?${from}=${username}`)
 		.then(response => response.json())
 		.then(json => {
-			console.log(json);
-
 			return json;
 		});
 }
