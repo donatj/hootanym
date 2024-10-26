@@ -37,11 +37,6 @@ async function render(elm: HTMLElement) {
 
 	user.KeybaseLookup().then((keybase) => {
 		for (const k of keybase.them) {
-			div.insertBefore(serviceIcon(
-				`https://news.ycombinator.com/user?id=${user.user}`,
-				'hackernews'
-			), notes);
-
 			for (const proof of k.proofs_summary.all) {
 				div.insertBefore(serviceIcon(
 					proof.service_url,
