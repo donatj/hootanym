@@ -65,17 +65,22 @@ function serviceIcon(url: string, service: string): HTMLAnchorElement {
 	return link;
 }
 
-function getHNUser(elm: Element): HNUser {
+function hackerNewsUsernameFromElement(elm: Element): string {
 	const link = elm.getAttribute('href') || '';
 	if (link != '') {
 		const url = new URL(link, window.location.href);
 		const user = url.searchParams.get('id');
 		if (user) {
-			return new HNUser(user);
+			return user;
 		}
 	}
 
 	throw new Error('Could not parse HN user');
+}
+
+function getHNUser(elm: Element): HNUser {
+	const user = hackerNewsUsernameFromElement(elm);
+	return new HNUser(user);
 }
 
 hnusers.forEach(render);
