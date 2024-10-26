@@ -80,9 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
 					return;
 				}
 
-				const part = parts[0] ?? '';
-				if (!isAValidPrefix(part)) {
-					importUserDataOutput.textContent += `Prefix ${part} is unhandled\n`;
+				const prefix = parts[0] ?? '';
+				if (!isAValidPrefix(prefix)) {
+					importUserDataOutput.textContent += `Prefix ${prefix} is unhandled\n`;
 					return;
 				}
 
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				const user = parts[2] ?? '';
 				const hnuser = new HNUser(user, service);
 
-				switch (part) {
+				switch (prefix) {
 					case descrPrefix:
 						hnuser.storeDescr(value);
 						break;
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 						hnuser.storeEmoji(value);
 						break;
 					default:
-						throw new NeverError(part);
+						throw new NeverError(prefix);
 				}
 			});
 		};
