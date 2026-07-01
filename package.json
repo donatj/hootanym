@@ -10,7 +10,7 @@
   "author": "Jesse G Donat <donatj@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@types/chrome": "^0.1.43"
+    "@types/chrome": "^0.2.2"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.3.0",
