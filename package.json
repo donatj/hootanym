@@ -8,7 +8,11 @@
     "node": ">=24"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "make lint",
+    "lint:fix": "make lint-fix",
+    "format": "make format",
+    "format:check": "make format-check"
   },
   "author": "Jesse G Donat <donatj@gmail.com>",
   "license": "MIT",
@@ -17,6 +21,8 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.3.1",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
     "rollup": "^4.66.0",
     "sass": "^1.105.0",
     "tslib": "^2.8.1",
