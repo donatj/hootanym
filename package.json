@@ -8,7 +8,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "test": "make test",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "make lint",
     "lint:fix": "make lint-fix",
     "format": "make format",

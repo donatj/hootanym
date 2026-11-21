@@ -15,5 +15,4 @@ The build also requires `make` and `jq`.
 Run `make release` to create a release ZIP file. This also requires `zip`.
 Run `make lint` and `make format-check` to check the source.
 Run `make lint-fix` and `make format` to apply fixes.
-Run `make test` to run the tests.
 
