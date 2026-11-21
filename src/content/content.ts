@@ -4,7 +4,9 @@ import { isKnownProofType } from "./keybase";
 import { HNUser } from "./users";
 
 const dialog = new Dialog(document.body);
-const hnusers = document.querySelectorAll('a.hnuser') as any as NodeListOf<HTMLAnchorElement>;
+const hnusers = document.querySelectorAll<HTMLAnchorElement>(
+	'a.hnuser, .subline > a[href^="user?id="], .comhead > a[href^="user?id="]'
+);
 
 async function render(elm: HTMLElement) {
 	const user = getHNUser(elm);
