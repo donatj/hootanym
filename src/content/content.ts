@@ -4,9 +4,6 @@ import { isKnownProofType } from "./keybase";
 import { HNUser } from "./users";
 
 const dialog = new Dialog(document.body);
-const hnusers = document.querySelectorAll<HTMLAnchorElement>(
-	'a.hnuser, .subline > a[href^="user?id="], .comhead > a[href^="user?id="]',
-);
 
 async function render(elm: HTMLElement) {
 	const user = getHNUser(elm);
@@ -25,13 +22,14 @@ async function render(elm: HTMLElement) {
 		notes.textContent = info.emoji;
 		notes.title = info.descr;
 		elm.title = "descr: " + info.descr;
+	} else if (elm.title.startsWith("descr: ")) {
+		elm.removeAttribute("title");
 	}
 
 	notes.addEventListener("click", async () => {
-		dialog.show(await user.getInfo(), (value) => {
-			user.store(value);
-			div.parentElement?.removeChild(div);
-			render(elm);
+		dialog.show(await user.getInfo(), async (value) => {
+			await user.store(value);
+			refreshUsers();
 		});
 	});
 
@@ -93,4 +91,13 @@ function getHNUser(elm: Element): HNUser {
 	return new HNUser(user);
 }
 
-hnusers.forEach(render);
+function refreshUsers() {
+	document.querySelectorAll(".hnwhois-user").forEach((elm) => elm.remove());
+	document
+		.querySelectorAll<HTMLAnchorElement>(
+			'a.hnuser, .subline > a[href^="user?id="], .comhead > a[href^="user?id="]',
+		)
+		.forEach(render);
+}
+
+refreshUsers();
