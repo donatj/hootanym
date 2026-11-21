@@ -185,7 +185,14 @@ export function lookupKeybaseCached(username: string, from: KeybaseFrom): Promis
 				expiry: Date.now() + 1000 * 60 * 60 * 24
 			}
 
-			localStorage.setItem(cacheKey, JSON.stringify(cache));
+			try {
+				localStorage.setItem(cacheKey, JSON.stringify(cache));
+			} catch (error) {
+				if (!(error instanceof DOMException && error.name === 'QuotaExceededError')) {
+					throw error;
+				}
+				// The lookup can still succeed when the cache is full.
+			}
 			return result;
 		});
 }
