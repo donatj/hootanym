@@ -39,6 +39,11 @@ async function render(elm: HTMLElement) {
 
 	user.KeybaseLookup().then((keybase) => {
 		for (const k of keybase.them) {
+			div.insertBefore(serviceIcon(
+				`https://keybase.io/${encodeURIComponent(k.basics.username)}`,
+				'keybase'
+			), notes);
+
 			for (const proof of k.proofs_summary.all) {
 				div.insertBefore(serviceIcon(
 					proof.service_url,
