@@ -8,3 +8,9 @@ It is a Chrome extension that reads usernames from pages it runs on and uses Key
 
 It currently only handles Hacker News, but other sites will be added in the future.
 
+## Building
+
+Install Node.js and npm, then run `npm ci` and `make build`.
+The build also requires `make` and `jq`.
+Run `make release` to create a release ZIP file. This also requires `zip`.
+

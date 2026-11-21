@@ -56,10 +56,12 @@ export class HNUser {
 	public async getInfo(): Promise<UserInfo> {
 		const descr = await chrome.storage.sync.get(this.descrKey());
 		const emoji = await chrome.storage.sync.get(this.emojiKey());
+		const storedDescr = descr[this.descrKey()];
+		const storedEmoji = emoji[this.emojiKey()];
 
 		return {
-			descr: (descr[this.descrKey()] || '').trim(),
-			emoji: emoji[this.emojiKey()] || defaultEmoji,
+			descr: typeof storedDescr === 'string' ? storedDescr.trim() : '',
+			emoji: typeof storedEmoji === 'string' && storedEmoji ? storedEmoji : defaultEmoji,
 		};
 	}
 
