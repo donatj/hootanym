@@ -9,10 +9,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "oxlint --config oxlint.config.mjs src",
-    "lint:fix": "oxlint --config oxlint.config.mjs --fix src",
-    "format": "oxfmt --config oxfmt.config.mjs --ignore-path .oxfmtignore --write src",
-    "format:check": "oxfmt --config oxfmt.config.mjs --ignore-path .oxfmtignore --check src"
+    "lint": "make lint",
+    "lint:fix": "make lint-fix",
+    "format": "make format",
+    "format:check": "make format-check"
   },
   "author": "Jesse G Donat <donatj@gmail.com>",
   "license": "MIT",
