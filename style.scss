@@ -1,10 +1,15 @@
 .hnwhois-dialog {
 	box-sizing: border-box;
-	width: min(40rem, calc(100vw - 4rem));
-	padding: 1rem;
+	width: 640px;
+	padding: 16px;
 	border: 1px solid #aaa;
 	border-radius: 8px;
 	box-shadow: 0 8px 24px #0003;
+
+	&[open] {
+		display: flex;
+		flex-direction: column;
+	}
 
 	ul {
 		display: flex;
@@ -35,12 +40,11 @@
 
 	textarea {
 		box-sizing: border-box;
-		width: 100%;
+		width: auto;
 		min-width: 0;
-		max-width: 100%;
 		min-height: 5em;
 		resize: vertical;
-		padding: 0.5rem;
+		padding: 8px;
 		border: 1px solid #bbb;
 		border-radius: 4px;
 	}
