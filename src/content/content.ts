@@ -5,29 +5,29 @@ import { HNUser } from "./users";
 
 const dialog = new Dialog(document.body);
 const hnusers = document.querySelectorAll<HTMLAnchorElement>(
-	'a.hnuser, .subline > a[href^="user?id="], .comhead > a[href^="user?id="]'
+	'a.hnuser, .subline > a[href^="user?id="], .comhead > a[href^="user?id="]',
 );
 
 async function render(elm: HTMLElement) {
 	const user = getHNUser(elm);
-	const div = document.createElement('div');
+	const div = document.createElement("div");
 
-	div.classList.add('hnwhois-user');
+	div.classList.add("hnwhois-user");
 	elm.parentNode?.insertBefore(div, elm.nextSibling);
 
-	const notes = document.createElement('a');
-	notes.classList.add('hnwhois-user-link');
-	notes.textContent = '⋯';
+	const notes = document.createElement("a");
+	notes.classList.add("hnwhois-user-link");
+	notes.textContent = "⋯";
 
 	const info = await user.getInfo();
-	if (info.descr != '') {
-		notes.classList.add('hnwhois-user-link-seen');
+	if (info.descr != "") {
+		notes.classList.add("hnwhois-user-link-seen");
 		notes.textContent = info.emoji;
 		notes.title = info.descr;
-		elm.title = 'descr: ' + info.descr;
+		elm.title = "descr: " + info.descr;
 	}
 
-	notes.addEventListener('click', async () => {
+	notes.addEventListener("click", async () => {
 		dialog.show(await user.getInfo(), (value) => {
 			user.store(value);
 			div.parentElement?.removeChild(div);
@@ -39,33 +39,36 @@ async function render(elm: HTMLElement) {
 
 	user.KeybaseLookup().then((keybase) => {
 		for (const k of keybase.them) {
-			div.insertBefore(serviceIcon(
-				`https://keybase.io/${encodeURIComponent(k.basics.username)}`,
-				'keybase'
-			), notes);
+			div.insertBefore(
+				serviceIcon(
+					`https://keybase.io/${encodeURIComponent(k.basics.username)}`,
+					"keybase",
+				),
+				notes,
+			);
 
 			for (const proof of k.proofs_summary.all) {
-				div.insertBefore(serviceIcon(
-					proof.service_url,
-					proof.proof_type
-				), notes);
+				div.insertBefore(
+					serviceIcon(proof.service_url, proof.proof_type),
+					notes,
+				);
 			}
 		}
 	});
-};
+}
 
 function serviceIcon(url: string, service: string): HTMLAnchorElement {
-	const link = document.createElement('a');
+	const link = document.createElement("a");
 	link.href = url;
 
-	const img = document.createElement('img');
+	const img = document.createElement("img");
 	if (isKnownProofType(service)) {
 		img.src = iconDataStream(service);
 	} else {
-		img.src = iconDataStream('unknown');
+		img.src = iconDataStream("unknown");
 	}
 
-	img.title = service + ' account';
+	img.title = service + " account";
 	img.alt = img.title;
 
 	link.appendChild(img);
@@ -73,16 +76,16 @@ function serviceIcon(url: string, service: string): HTMLAnchorElement {
 }
 
 function hackerNewsUsernameFromElement(elm: Element): string {
-	const link = elm.getAttribute('href') || '';
-	if (link != '') {
+	const link = elm.getAttribute("href") || "";
+	if (link != "") {
 		const url = new URL(link, window.location.href);
-		const user = url.searchParams.get('id');
+		const user = url.searchParams.get("id");
 		if (user) {
 			return user;
 		}
 	}
 
-	throw new Error('Could not parse HN user');
+	throw new Error("Could not parse HN user");
 }
 
 function getHNUser(elm: Element): HNUser {

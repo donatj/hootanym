@@ -10,7 +10,9 @@ It currently only handles Hacker News, but other sites will be added in the futu
 
 ## Building
 
-Install Node.js and npm, then run `npm ci` and `make build`.
+Install Node.js and npm, then run `make install` and `make build`.
 The build also requires `make` and `jq`.
 Run `make release` to create a release ZIP file. This also requires `zip`.
+Run `make lint` and `make format-check` to check the source.
+Run `make lint-fix` and `make format` to apply fixes.
 
