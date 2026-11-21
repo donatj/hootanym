@@ -4,7 +4,9 @@ import { isKnownProofType } from "./keybase";
 import { HNUser } from "./users";
 
 const dialog = new Dialog(document.body);
-const hnusers = document.querySelectorAll('a.hnuser') as any as NodeListOf<HTMLAnchorElement>;
+const hnusers = document.querySelectorAll<HTMLAnchorElement>(
+	'a.hnuser, .subline > a[href^="user?id="], .comhead > a[href^="user?id="]'
+);
 
 async function render(elm: HTMLElement) {
 	const user = getHNUser(elm);
@@ -37,6 +39,11 @@ async function render(elm: HTMLElement) {
 
 	user.KeybaseLookup().then((keybase) => {
 		for (const k of keybase.them) {
+			div.insertBefore(serviceIcon(
+				`https://keybase.io/${encodeURIComponent(k.basics.username)}`,
+				'keybase'
+			), notes);
+
 			for (const proof of k.proofs_summary.all) {
 				div.insertBefore(serviceIcon(
 					proof.service_url,

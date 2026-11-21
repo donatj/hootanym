@@ -170,8 +170,10 @@ function isCacheWrapper<T>(value: any): value is CacheWrapper<T> {
 	return value && typeof value.value !== 'undefined' && typeof value.expiry !== 'undefined';
 }
 
+const cachePrefix = 'cache:keybase:api:';
+
 export function lookupKeybaseCached(username: string, from: KeybaseFrom): Promise<KeybaseAPI> {
-	const cacheKey = `cache:keybase:api:${from}:${username}`;
+	const cacheKey = `${cachePrefix}${from}:${username}`;
 
 	const cached = localStorage.getItem(cacheKey);
 	if (cached && isCacheWrapper<KeybaseAPI>(JSON.parse(cached)) && JSON.parse(cached).expiry > Date.now()) {
@@ -185,7 +187,16 @@ export function lookupKeybaseCached(username: string, from: KeybaseFrom): Promis
 				expiry: Date.now() + 1000 * 60 * 60 * 24
 			}
 
-			localStorage.setItem(cacheKey, JSON.stringify(cache));
+			try {
+				localStorage.setItem(cacheKey, JSON.stringify(cache));
+			} catch (error) {
+				if (!(error instanceof DOMException && error.name === 'QuotaExceededError')) {
+					throw error;
+				}
+				Object.keys(localStorage)
+					.filter(key => key.startsWith(cachePrefix))
+					.forEach(key => localStorage.removeItem(key));
+			}
 			return result;
 		});
 }

@@ -4,6 +4,9 @@
   "description": "Take notes on HN users, see their Keybase.io profiles and more!",
   "main": "content.js",
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +20,6 @@
     "rollup": "^4.66.0",
     "sass": "^1.105.0",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }
