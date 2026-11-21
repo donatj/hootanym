@@ -8,7 +8,11 @@
     "node": ">=24"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "oxlint --config oxlint.config.mjs src",
+    "lint:fix": "oxlint --config oxlint.config.mjs --fix src",
+    "format": "oxfmt --config oxfmt.config.mjs --ignore-path .oxfmtignore --write src",
+    "format:check": "oxfmt --config oxfmt.config.mjs --ignore-path .oxfmtignore --check src"
   },
   "author": "Jesse G Donat <donatj@gmail.com>",
   "license": "MIT",
@@ -17,6 +21,8 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.3.1",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
     "rollup": "^4.66.0",
     "sass": "^1.105.0",
     "tslib": "^2.8.1",

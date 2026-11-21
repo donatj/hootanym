@@ -36,8 +36,7 @@ export interface Basics {
 
 export type Username = string;
 
-export interface CryptocurrencyAddresses {
-}
+export interface CryptocurrencyAddresses {}
 
 export interface Device {
 	readonly type: DeviceType;
@@ -142,23 +141,39 @@ export interface StellarPrimary {
 
 export type KeybaseFrom = ProofTypes;
 
-export function lookupKeybase(username: string, from: KeybaseFrom): Promise<KeybaseAPI> {
-	return fetch(`https://keybase.io/_/api/1.0/user/lookup.json?${from}=${username}`)
-		.then(response => response.json())
-		.then(json => {
+export function lookupKeybase(
+	username: string,
+	from: KeybaseFrom,
+): Promise<KeybaseAPI> {
+	return fetch(
+		`https://keybase.io/_/api/1.0/user/lookup.json?${from}=${username}`,
+	)
+		.then((response) => response.json())
+		.then((json) => {
 			return json;
 		});
 }
 
-export function lookupKeybaseWithRetry(username: string, from: KeybaseFrom, retries: number = 3): Promise<KeybaseAPI> {
-	return lookupKeybase(username, from)
-		.catch(err => {
-			if (retries > 0) {
-				return new Promise((resolve) => setTimeout(() => resolve(lookupKeybaseWithRetry(username, from, retries - 1)), 1000))
-			}
+export function lookupKeybaseWithRetry(
+	username: string,
+	from: KeybaseFrom,
+	retries: number = 3,
+): Promise<KeybaseAPI> {
+	return lookupKeybase(username, from).catch((err) => {
+		if (retries > 0) {
+			return new Promise((resolve) =>
+				setTimeout(
+					() =>
+						resolve(
+							lookupKeybaseWithRetry(username, from, retries - 1),
+						),
+					1000,
+				),
+			);
+		}
 
-			throw err;
-		});
+		throw err;
+	});
 }
 
 interface CacheWrapper<T> {
@@ -167,52 +182,67 @@ interface CacheWrapper<T> {
 }
 
 function isCacheWrapper<T>(value: any): value is CacheWrapper<T> {
-	return value && typeof value.value !== 'undefined' && typeof value.expiry !== 'undefined';
+	return (
+		value &&
+		typeof value.value !== "undefined" &&
+		typeof value.expiry !== "undefined"
+	);
 }
 
-const cachePrefix = 'cache:keybase:api:';
+const cachePrefix = "cache:keybase:api:";
 
-export function lookupKeybaseCached(username: string, from: KeybaseFrom): Promise<KeybaseAPI> {
+export function lookupKeybaseCached(
+	username: string,
+	from: KeybaseFrom,
+): Promise<KeybaseAPI> {
 	const cacheKey = `${cachePrefix}${from}:${username}`;
 
 	const cached = localStorage.getItem(cacheKey);
-	if (cached && isCacheWrapper<KeybaseAPI>(JSON.parse(cached)) && JSON.parse(cached).expiry > Date.now()) {
+	if (
+		cached &&
+		isCacheWrapper<KeybaseAPI>(JSON.parse(cached)) &&
+		JSON.parse(cached).expiry > Date.now()
+	) {
 		return Promise.resolve(JSON.parse(cached).value);
 	}
 
-	return lookupKeybaseWithRetry(username, from)
-		.then(result => {
-			let cache : CacheWrapper<KeybaseAPI> = {
-				value: result,
-				expiry: Date.now() + 1000 * 60 * 60 * 24
-			}
+	return lookupKeybaseWithRetry(username, from).then((result) => {
+		let cache: CacheWrapper<KeybaseAPI> = {
+			value: result,
+			expiry: Date.now() + 1000 * 60 * 60 * 24,
+		};
 
-			try {
-				localStorage.setItem(cacheKey, JSON.stringify(cache));
-			} catch (error) {
-				if (!(error instanceof DOMException && error.name === 'QuotaExceededError')) {
-					throw error;
-				}
-				Object.keys(localStorage)
-					.filter(key => key.startsWith(cachePrefix))
-					.forEach(key => localStorage.removeItem(key));
+		try {
+			localStorage.setItem(cacheKey, JSON.stringify(cache));
+		} catch (error) {
+			if (
+				!(
+					error instanceof DOMException &&
+					error.name === "QuotaExceededError"
+				)
+			) {
+				throw error;
 			}
-			return result;
-		});
+			Object.keys(localStorage)
+				.filter((key) => key.startsWith(cachePrefix))
+				.forEach((key) => localStorage.removeItem(key));
+		}
+		return result;
+	});
 }
 
 export const proof_types = [
-	'keybase',
-	'hackernews',
-	'reddit',
-	'github',
-	'generic_web_site',
-	'dns',
-	'facebook',
-	'twitter',
+	"keybase",
+	"hackernews",
+	"reddit",
+	"github",
+	"generic_web_site",
+	"dns",
+	"facebook",
+	"twitter",
 ] as const;
 
-export type ProofTypes = typeof proof_types[number];
+export type ProofTypes = (typeof proof_types)[number];
 
 export function isKnownProofType(type: string): type is ProofTypes {
 	return proof_types.includes(type as ProofTypes);

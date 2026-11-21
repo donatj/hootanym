@@ -6,21 +6,19 @@ export interface UserInfo {
 	emoji: string;
 }
 
-export const descrPrefix = 'identity' as const;
-export const emojiPrefix = 'emoji' as const;
+export const descrPrefix = "identity" as const;
+export const emojiPrefix = "emoji" as const;
 export type prefixes = typeof emojiPrefix | typeof descrPrefix;
 
 export function isAValidPrefix(prefix: string): prefix is prefixes {
 	return prefix === descrPrefix || prefix === emojiPrefix;
 }
 
-
 export class HNUser {
-
 	constructor(
 		public readonly user: string,
-		public readonly type : ProofTypes = 'hackernews'
-	) { }
+		public readonly type: ProofTypes = "hackernews",
+	) {}
 
 	private descrKey(): string {
 		return `${descrPrefix}:${this.type}:${this.user}`;
@@ -39,7 +37,7 @@ export class HNUser {
 	public async storeDescr(descr: string) {
 		descr = descr.trim();
 
-		if(descr == '') {
+		if (descr == "") {
 			await chrome.storage.sync.remove(this.descrKey());
 			await chrome.storage.sync.remove(this.emojiKey());
 
@@ -60,8 +58,11 @@ export class HNUser {
 		const storedEmoji = emoji[this.emojiKey()];
 
 		return {
-			descr: typeof storedDescr === 'string' ? storedDescr.trim() : '',
-			emoji: typeof storedEmoji === 'string' && storedEmoji ? storedEmoji : defaultEmoji,
+			descr: typeof storedDescr === "string" ? storedDescr.trim() : "",
+			emoji:
+				typeof storedEmoji === "string" && storedEmoji
+					? storedEmoji
+					: defaultEmoji,
 		};
 	}
 
