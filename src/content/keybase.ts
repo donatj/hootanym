@@ -9,16 +9,8 @@ export interface Status {
 }
 
 export interface Them {
-	readonly id: string;
 	readonly basics: Basics;
-	readonly profile: Profile;
-	readonly public_keys: PublicKeys;
 	readonly proofs_summary: ProofsSummary;
-	readonly cryptocurrency_addresses: CryptocurrencyAddresses;
-	readonly pictures: Pictures;
-	readonly sigs: Sigs;
-	readonly devices: { [key: string]: Device };
-	readonly stellar: Stellar;
 }
 
 export interface Basics {
@@ -145,9 +137,11 @@ export function lookupKeybase(
 	username: string,
 	from: KeybaseFrom,
 ): Promise<KeybaseAPI> {
-	return fetch(
-		`https://keybase.io/_/api/1.0/user/lookup.json?${from}=${username}`,
-	)
+	const params = new URLSearchParams({
+		[from]: username,
+		fields: "basics,proofs_summary",
+	});
+	return fetch(`https://keybase.io/_/api/1.0/user/lookup.json?${params}`)
 		.then((response) => response.json())
 		.then((json) => {
 			return json;
@@ -181,54 +175,76 @@ interface CacheWrapper<T> {
 	readonly expiry: number;
 }
 
-function isCacheWrapper<T>(value: any): value is CacheWrapper<T> {
+function isCacheWrapper<T>(value: unknown): value is CacheWrapper<T> {
 	return (
-		value &&
-		typeof value.value !== "undefined" &&
-		typeof value.expiry !== "undefined"
+		typeof value === "object" &&
+		value !== null &&
+		"value" in value &&
+		value.value !== undefined &&
+		"expiry" in value &&
+		typeof value.expiry === "number"
 	);
 }
 
 const cachePrefix = "cache:keybase:api:";
+const cacheLimitBytes = 5 * 1024 * 1024;
 
-export function lookupKeybaseCached(
+async function trimCache(): Promise<void> {
+	const items = await chrome.storage.local.get(null);
+	const entries = Object.entries(items)
+		.filter(([key]) => key.startsWith(cachePrefix))
+		// Sort the new array in place for compatibility with older Chrome versions.
+		// oxlint-disable-next-line unicorn/no-array-sort
+		.sort(([, a], [, b]) => {
+			const aExpiry = isCacheWrapper(a) ? a.expiry : 0;
+			const bExpiry = isCacheWrapper(b) ? b.expiry : 0;
+			return aExpiry - bExpiry;
+		});
+	const expiredCount = entries.filter(
+		([, value]) => !isCacheWrapper(value) || value.expiry <= Date.now(),
+	).length;
+	const removeCount = Math.max(expiredCount, Math.ceil(entries.length / 2));
+	const keys = entries.slice(0, removeCount).map(([key]) => key);
+	if (keys.length > 0) {
+		await chrome.storage.local.remove(keys);
+	}
+}
+
+export async function lookupKeybaseCached(
 	username: string,
 	from: KeybaseFrom,
 ): Promise<KeybaseAPI> {
 	const cacheKey = `${cachePrefix}${from}:${username}`;
 
-	const cached = localStorage.getItem(cacheKey);
-	if (
-		cached &&
-		isCacheWrapper<KeybaseAPI>(JSON.parse(cached)) &&
-		JSON.parse(cached).expiry > Date.now()
-	) {
-		return Promise.resolve(JSON.parse(cached).value);
+	try {
+		const cached = (await chrome.storage.local.get(cacheKey))[cacheKey];
+		if (isCacheWrapper<KeybaseAPI>(cached) && cached.expiry > Date.now()) {
+			return cached.value;
+		}
+	} catch {
+		// A cache failure should not prevent a fresh lookup.
 	}
 
-	return lookupKeybaseWithRetry(username, from).then((result) => {
-		let cache: CacheWrapper<KeybaseAPI> = {
+	const result = await lookupKeybaseWithRetry(username, from);
+	if (result.status?.code === 0 && Array.isArray(result.them)) {
+		const cache: CacheWrapper<KeybaseAPI> = {
 			value: result,
 			expiry: Date.now() + 1000 * 60 * 60 * 24,
 		};
 
 		try {
-			localStorage.setItem(cacheKey, JSON.stringify(cache));
-		} catch (error) {
 			if (
-				!(
-					error instanceof DOMException &&
-					error.name === "QuotaExceededError"
-				)
+				(await chrome.storage.local.getBytesInUse(null)) >=
+				cacheLimitBytes
 			) {
-				throw error;
+				await trimCache();
 			}
-			Object.keys(localStorage)
-				.filter((key) => key.startsWith(cachePrefix))
-				.forEach((key) => localStorage.removeItem(key));
+			await chrome.storage.local.set({ [cacheKey]: cache });
+		} catch {
+			// The lookup remains usable if it cannot be cached.
 		}
-		return result;
-	});
+	}
+	return result;
 }
 
 export const proof_types = [

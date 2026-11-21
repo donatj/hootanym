@@ -27,11 +27,16 @@ format:
 format-check:
 	npx oxfmt --config oxfmt.config.mjs --ignore-path .oxfmtignore --check src
 
+.PHONY: test
+test:
+	node --test tests/*.test.mjs
+
 .PHONY: ci
 ci:
 	$(MAKE) install
 	$(MAKE) format-check
 	$(MAKE) lint
+	$(MAKE) test
 	$(MAKE) release
 
 .PHONY: sync
