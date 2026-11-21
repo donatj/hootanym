@@ -2,8 +2,7 @@ import { UserInfo } from "./users";
 
 export const emojis = [
 	'👁️', '⭐', '🧙', '🔥', '👑', '🚨', '🛡️', '🐧', '💀', '🤖',
-	'🦉', '🦊', '❤️', '💡', '🤔', '😂', '🙄', '🤝', '📚', '🔬',
-	'🎨', '🐛', '🚩', '🧠',
+	'🦉', '🦊', '❤️', '📚', '🔬', '🎨', '🐛', '🚩', '🧠',
 ] as const;
 
 export const defaultEmoji = emojis[0];
