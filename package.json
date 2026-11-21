@@ -4,6 +4,9 @@
   "description": "Take notes on HN users, see their Keybase.io profiles and more!",
   "main": "content.js",
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
