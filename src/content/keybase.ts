@@ -137,11 +137,9 @@ export function lookupKeybase(
 	username: string,
 	from: KeybaseFrom,
 ): Promise<KeybaseAPI> {
-	const params = new URLSearchParams({
-		[from]: username,
-		fields: "basics,proofs_summary",
-	});
-	return fetch(`https://keybase.io/_/api/1.0/user/lookup.json?${params}`)
+	return fetch(
+		`https://keybase.io/_/api/1.0/user/lookup.json?${from}=${username}&fields=basics,proofs_summary`,
+	)
 		.then((response) => response.json())
 		.then((json) => {
 			return json;
@@ -200,11 +198,9 @@ async function trimCache(): Promise<void> {
 			const bExpiry = isCacheWrapper(b) ? b.expiry : 0;
 			return aExpiry - bExpiry;
 		});
-	const expiredCount = entries.filter(
-		([, value]) => !isCacheWrapper(value) || value.expiry <= Date.now(),
-	).length;
-	const removeCount = Math.max(expiredCount, Math.ceil(entries.length / 2));
-	const keys = entries.slice(0, removeCount).map(([key]) => key);
+	const keys = entries
+		.slice(0, Math.ceil(entries.length / 2))
+		.map(([key]) => key);
 	if (keys.length > 0) {
 		await chrome.storage.local.remove(keys);
 	}
@@ -226,23 +222,20 @@ export async function lookupKeybaseCached(
 	}
 
 	const result = await lookupKeybaseWithRetry(username, from);
-	if (result.status?.code === 0 && Array.isArray(result.them)) {
-		const cache: CacheWrapper<KeybaseAPI> = {
-			value: result,
-			expiry: Date.now() + 1000 * 60 * 60 * 24,
-		};
+	const cache: CacheWrapper<KeybaseAPI> = {
+		value: result,
+		expiry: Date.now() + 1000 * 60 * 60 * 24,
+	};
 
-		try {
-			if (
-				(await chrome.storage.local.getBytesInUse(null)) >=
-				cacheLimitBytes
-			) {
-				await trimCache();
-			}
-			await chrome.storage.local.set({ [cacheKey]: cache });
-		} catch {
-			// The lookup remains usable if it cannot be cached.
+	try {
+		if (
+			(await chrome.storage.local.getBytesInUse(null)) >= cacheLimitBytes
+		) {
+			await trimCache();
 		}
+		await chrome.storage.local.set({ [cacheKey]: cache });
+	} catch {
+		// The lookup remains usable if it cannot be cached.
 	}
 	return result;
 }

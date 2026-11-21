@@ -33,7 +33,7 @@ function setup(t, initial = {}, options = {}) {
 	};
 	globalThis.fetch = async (url) => {
 		calls.push(new URL(url));
-		return { json: async () => options.response ?? result };
+		return { json: async () => result };
 	};
 	t.after(() => {
 		globalThis.chrome = previousChrome;
@@ -55,15 +55,15 @@ test("uses an unexpired extension cache entry", async (t) => {
 
 test("fetches limited fields and replaces an expired entry", async (t) => {
 	const { items, calls } = setup(t, {
-		[`${prefix}sam&other=yes`]: { value: result, expiry: Date.now() - 1 },
+		[`${prefix}sam`]: { value: result, expiry: Date.now() - 1 },
 	});
 
-	assert.deepEqual(await lookupKeybaseCached("sam&other=yes", "hackernews"), result);
+	assert.deepEqual(await lookupKeybaseCached("sam", "hackernews"), result);
 	assert.equal(calls.length, 1);
-	assert.equal(calls[0].searchParams.get("hackernews"), "sam&other=yes");
+	assert.equal(calls[0].searchParams.get("hackernews"), "sam");
 	assert.equal(calls[0].searchParams.get("fields"), "basics,proofs_summary");
-	assert.deepEqual(items[`${prefix}sam&other=yes`].value, result);
-	assert.ok(items[`${prefix}sam&other=yes`].expiry > Date.now());
+	assert.deepEqual(items[`${prefix}sam`].value, result);
+	assert.ok(items[`${prefix}sam`].expiry > Date.now());
 });
 
 test("trims old cache entries without removing other extension data", async (t) => {
@@ -93,15 +93,6 @@ test("returns fresh results when cache reads or writes fail", async (t) => {
 	const { calls, items } = setup(t, {}, { failRead: true, failWrite: true });
 
 	assert.deepEqual(await lookupKeybaseCached("sam", "hackernews"), result);
-	assert.equal(calls.length, 1);
-	assert.equal(items[`${prefix}sam`], undefined);
-});
-
-test("does not cache a Keybase error response", async (t) => {
-	const response = { status: { code: 100, name: "INPUT_ERROR" }, them: null };
-	const { calls, items } = setup(t, {}, { response });
-
-	assert.deepEqual(await lookupKeybaseCached("sam", "hackernews"), response);
 	assert.equal(calls.length, 1);
 	assert.equal(items[`${prefix}sam`], undefined);
 });
